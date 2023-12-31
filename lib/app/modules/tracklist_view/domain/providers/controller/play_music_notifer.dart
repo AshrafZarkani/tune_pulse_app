@@ -43,15 +43,17 @@ class PlayMusickNotifier extends ChangeNotifier {
         ref
             .read(selectedTrackNotifierProvider.notifier)
             .selectedTrack(ref: ref, isSelected: false);
-        // Update seekbar value
+      }
+      // Update seekbar value
+      if (currentDuration != null) {
         double val = position.inMilliseconds.toDouble() /
             currentDuration!.inMilliseconds.toDouble();
         if (val > 0 && val < 1) {
           seekbarValue = val;
         }
+        notifyListeners();
+        // Notify listeners for UI updates
       }
-
-      notifyListeners(); // Notify listeners for UI updates
     });
 
     // Start playback initially

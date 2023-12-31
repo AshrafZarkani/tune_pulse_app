@@ -35,9 +35,11 @@ class TrackTileView extends ConsumerWidget with TrackHelpers {
         children: [
           RawMaterialButton(
             onPressed: () {
+              musicPlaying.onPlay();
               selectedTrackController.selectedTrack(
                 track: track,
                 ref: ref,
+                isSelected: true,
               );
             },
             elevation: 1.0,

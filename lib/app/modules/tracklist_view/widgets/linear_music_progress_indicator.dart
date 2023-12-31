@@ -15,17 +15,19 @@ class LinearMusicProgressIndicator extends ConsumerStatefulWidget {
 }
 
 class _LinearMusicProgressIndicatorState
-    extends ConsumerState<LinearMusicProgressIndicator>
-     {
+    extends ConsumerState<LinearMusicProgressIndicator> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      final url = ref.read(selectedTrackNotifierProvider).track?.preview;
-      if (url != null) {
-        ref.read(playMusicNotifierProvider.notifier).init(url, ref);
-      }
-    });
+    final track = widget.track;
+    if (track != null) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        final url = track.preview;
+        if (context.mounted) {
+          ref.read(playMusicNotifierProvider.notifier).init(url, ref);
+        }
+      });
+    }
   }
 
   @override

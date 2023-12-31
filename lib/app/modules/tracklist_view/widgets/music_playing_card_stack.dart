@@ -85,11 +85,13 @@ class MusicPlayingCard extends ConsumerWidget {
                       children: [
                         InkWell(
                           onTap: () {
+                            ref.read(playMusicNotifierProvider).onPlay();
                             // Toggling play/pause for selected track
                             if (selectedTrackState.track != null) {
                               selectedTrackController.selectedTrack(
                                 track: selectedTrackState.track,
                                 ref: ref,
+                                isSelected: true,
                               );
                             } else {
                               selectedTrackController.selectedTrack(

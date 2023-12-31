@@ -16,14 +16,17 @@ class TrackDetailesScreenAppBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 1.h),
-      child: Consumer(builder: (_, ref, __) {
-        final musicController = ref.read(playMusicNotifierProvider.notifier);
+      child: Consumer(builder: (context, ref, child) {
+        //final musicController = ref.read(playMusicNotifierProvider.notifier);
 
         return CustomAppBar(
           appBarTitle: context.translate.nowPlaying,
           leadingTrue: true,
           leadingCallBack: () {
-            musicController.onStop();
+            ref
+                .read(selectedTrackNotifierProvider.notifier)
+                .selectedTrack(ref: ref, isSelected: false);
+            //musicController.onStop();
             context.pop(true);
           },
           backgroundColor: Colors.transparent,

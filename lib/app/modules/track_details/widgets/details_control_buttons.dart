@@ -26,22 +26,7 @@ class SDetailsControlButtons extends ConsumerStatefulWidget {
 
 class _SDetailsControlButtonsState
     extends ConsumerState<SDetailsControlButtons> {
-  @override
-  void initState() {
-    super.initState();
 
-    // Initialize music player after first frame for smoother rendering
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      final url = widget.track.preview;
-      if (url.isNotEmpty) {
-        if (ref.read(playMusicNotifierProvider.notifier).isLoaded == false) {
-          ref
-              .read(playMusicNotifierProvider.notifier)
-              .init(url, ref); // Load music if not already loaded
-        }
-      }
-    });
-  }
 
   @override
   Widget build(BuildContext context) {

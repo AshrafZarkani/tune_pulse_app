@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sizer/sizer.dart';
 import 'package:tune_pulse/app/modules/track_details/widgets/details_control_buttons.dart';
 import 'package:tune_pulse/app/modules/track_details/widgets/details_screen_appbar.dart';
@@ -9,11 +10,36 @@ import 'package:tune_pulse/app/modules/track_details/widgets/song_artist_name.da
 import 'package:tune_pulse/app/modules/track_details/widgets/track_details_button_bar.dart';
 import 'package:tune_pulse/app/modules/track_details/widgets/track_slder_timer.dart';
 import 'package:tune_pulse/app/modules/tracklist_view/domain/models/track_model.dart';
+import 'package:tune_pulse/app/modules/tracklist_view/domain/providers/tracklist_providers.dart';
 
-class TrackDetails extends StatelessWidget {
+class TrackDetails extends ConsumerStatefulWidget {
   const TrackDetails({Key? key, required this.track}) : super(key: key);
 
   final Track track;
+
+  @override
+  ConsumerState<TrackDetails> createState() => _TrackDetailsState();
+}
+
+class _TrackDetailsState extends ConsumerState<TrackDetails> {
+  @override
+  void initState() {
+    super.initState();
+
+    // Initialize music player after first frame for smoother rendering
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      final url = widget.track.preview;
+      if (url.isNotEmpty) {
+        if (context.mounted) {
+          if (ref.watch(playMusicNotifierProvider.notifier).isLoaded == false) {
+            ref
+                .read(playMusicNotifierProvider.notifier)
+                .init(url, ref); // Load music if not already loaded
+          }
+        }
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +56,7 @@ class TrackDetails extends StatelessWidget {
               child: ImageFiltered(
                 imageFilter: ImageFilter.blur(sigmaX: 40, sigmaY: 40),
                 child: Image.network(
-                  track.artist.pictureMedium,
+                  widget.track.artist.pictureMedium,
                   height: 100.h,
                   width: 100.h,
                   fit: BoxFit.fitHeight,
@@ -43,7 +69,7 @@ class TrackDetails extends StatelessWidget {
                 children: [
                   const TrackDetailesScreenAppBar(),
                   const Spacer(),
-                  TrackDetailsImageWaveAnimation(track: track),
+                  TrackDetailsImageWaveAnimation(track: widget.track),
                   const Spacer(
                     flex: 1,
                   ),
@@ -51,15 +77,15 @@ class TrackDetails extends StatelessWidget {
                   const Spacer(
                     flex: 2,
                   ),
-                  SDetailsSongAndArtistName(track: track),
+                  SDetailsSongAndArtistName(track: widget.track),
                   const Spacer(
                     flex: 4,
                   ),
-                  TrackTimerSlider(track: track),
+                  TrackTimerSlider(track: widget.track),
                   const Spacer(
                     flex: 3,
                   ),
-                  SDetailsControlButtons(track: track),
+                  SDetailsControlButtons(track: widget.track),
                   const Spacer(
                     flex: 4,
                   ),
@@ -72,5 +98,3 @@ class TrackDetails extends StatelessWidget {
     );
   }
 }
-
-
