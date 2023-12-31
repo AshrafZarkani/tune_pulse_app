@@ -56,16 +56,19 @@ class TrackTileView extends ConsumerWidget with TrackHelpers {
             ),
           ),
           SizedBox(
-            width: 0.5.h,
+            width: 1.h,
           ),
           Expanded(
             child: InkWell(
               onTap: () {
                 rootNavigatorKey.currentState!.context
-                    .pushNamed(MyNamedRoutes.trackDetails, extra: track);
-                // ref.read(playMusicNotifierProvider.notifier).onStop();
-                // selectedTrackController.selectedTrack(
-                //     ref: ref, isSelected: false, track: track);
+                    .pushNamed(MyNamedRoutes.trackDetails, extra: track)
+                    .then((value) {
+                  selectedTrackController.selectedTrack(
+                    track: track,
+                    ref: ref,
+                  );
+                });
               },
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

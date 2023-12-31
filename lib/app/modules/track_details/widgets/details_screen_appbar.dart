@@ -24,7 +24,7 @@ class TrackDetailesScreenAppBar extends StatelessWidget {
           leadingTrue: true,
           leadingCallBack: () {
             musicController.onStop();
-            context.pop();
+            context.pop(true);
           },
           backgroundColor: Colors.transparent,
           centerTitle: true,

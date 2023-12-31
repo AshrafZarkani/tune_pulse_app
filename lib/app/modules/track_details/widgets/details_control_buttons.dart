@@ -1,3 +1,6 @@
+// Import necessary libraries
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -7,10 +10,11 @@ import 'package:tune_pulse/app/core/constants/my_app_colors.dart';
 import 'package:tune_pulse/app/modules/tracklist_view/domain/models/track_model.dart';
 import 'package:tune_pulse/app/modules/tracklist_view/domain/providers/tracklist_providers.dart';
 
+// Widget to display music control buttons within track details
 class SDetailsControlButtons extends ConsumerStatefulWidget {
   const SDetailsControlButtons({
     super.key,
-    required this.track,
+    required this.track, // Track model to control
   });
 
   final Track track;
@@ -25,11 +29,15 @@ class _SDetailsControlButtonsState
   @override
   void initState() {
     super.initState();
+
+    // Initialize music player after first frame for smoother rendering
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       final url = widget.track.preview;
       if (url.isNotEmpty) {
         if (ref.read(playMusicNotifierProvider.notifier).isLoaded == false) {
-          ref.read(playMusicNotifierProvider.notifier).init(url, ref);
+          ref
+              .read(playMusicNotifierProvider.notifier)
+              .init(url, ref); // Load music if not already loaded
         }
       }
     });
@@ -39,27 +47,30 @@ class _SDetailsControlButtonsState
   Widget build(BuildContext context) {
     final musicPlayerController = ref.read(playMusicNotifierProvider.notifier);
     final musicPlayerState = ref.watch(playMusicNotifierProvider);
+
     return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment:
+          MainAxisAlignment.center, // Center buttons horizontally
       children: [
+        // Skip backward button
         SvgPicture.asset(MyAssetsPath.svgSkipBackward),
-        SizedBox(
-          width: 3.h,
-        ),
+        SizedBox(width: 3.h), // Spacing between buttons
+        // Rewind button
         SvgPicture.asset(MyAssetsPath.svgRewind),
-        SizedBox(
-          width: 3.h,
-        ),
+        SizedBox(width: 3.h),
+        // Play/pause button
         RawMaterialButton(
           onPressed: () {
-            musicPlayerController.onPlay();
+            musicPlayerController.onPlay(); // Toggle play/pause on tap
           },
-          elevation: 1.0,
-          fillColor: MyColors.othersWhite,
-          constraints: BoxConstraints(minWidth: 9.h, minHeight: 9.h),
-          padding: EdgeInsets.zero,
-          shape: const CircleBorder(),
+          elevation: 1.0, // Slight elevation for visual emphasis
+          fillColor: MyColors.othersWhite, // Fill color
+          constraints:
+              BoxConstraints(minWidth: 9.h, minHeight: 9.h), // Size constraints
+          padding: EdgeInsets.zero, // Remove default padding
+          shape: const CircleBorder(), // Circular shape
           child: SvgPicture.asset(
+            // Dynamically display play/pause icon based on state
             musicPlayerState.isPlaying
                 ? MyAssetsPath.svgPause
                 : MyAssetsPath.svgPlay,
@@ -68,13 +79,11 @@ class _SDetailsControlButtonsState
             fit: BoxFit.fill,
           ),
         ),
-        SizedBox(
-          width: 3.h,
-        ),
+        SizedBox(width: 3.h),
+        // Skip forward button
         SvgPicture.asset(MyAssetsPath.svgskipForward),
-        SizedBox(
-          width: 3.h,
-        ),
+        SizedBox(width: 3.h),
+        // Fast forward button
         SvgPicture.asset(MyAssetsPath.svgFastForward),
       ],
     );

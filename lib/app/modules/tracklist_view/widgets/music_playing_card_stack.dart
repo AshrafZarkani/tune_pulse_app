@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -9,11 +11,12 @@ import 'package:tune_pulse/app/modules/tracklist_view/widgets/linear_music_progr
 
 class MusicPlayingCard extends ConsumerWidget {
   const MusicPlayingCard({
-    super.key,
-  });
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Listening to the selected track and track controller
     final selectedTrackState = ref.watch(selectedTrackNotifierProvider);
     final selectedTrackController =
         ref.read(selectedTrackNotifierProvider.notifier);
@@ -25,6 +28,7 @@ class MusicPlayingCard extends ConsumerWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            // Glass container for displaying track details
             GlassContainer(
               height: 7.5.h,
               width: 100.w,
@@ -56,7 +60,7 @@ class MusicPlayingCard extends ConsumerWidget {
                 padding: EdgeInsets.symmetric(horizontal: 1.h),
                 child: Row(
                   children: [
-                    // Leading artist image
+                    // Displaying leading artist image
                     ClipRRect(
                       borderRadius: BorderRadius.circular(10),
                       child: Image.network(
@@ -67,7 +71,7 @@ class MusicPlayingCard extends ConsumerWidget {
                       ),
                     ),
                     SizedBox(width: 0.5.h),
-                    // Song title
+                    // Displaying song title
                     Expanded(
                       child: Text(
                         selectedTrackState.track?.titleShort.toString() ?? "",
@@ -75,12 +79,13 @@ class MusicPlayingCard extends ConsumerWidget {
                       ),
                     ),
                     const SizedBox(width: 10),
-                    // Trailing pause/next buttons
+                    // Play/Pause and Next buttons
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         InkWell(
                           onTap: () {
+                            // Toggling play/pause for selected track
                             if (selectedTrackState.track != null) {
                               selectedTrackController.selectedTrack(
                                 track: selectedTrackState.track,
@@ -94,10 +99,10 @@ class MusicPlayingCard extends ConsumerWidget {
                             }
                           },
                           child: SvgPicture.asset(
+                            // Displaying play/pause icon based on track state
                             ref.watch(playMusicNotifierProvider).isPlaying
                                 ? MyAssetsPath.svgPause
                                 : MyAssetsPath.svgPlay,
-                            // ignore: deprecated_member_use
                             color: MyColors.othersWhite,
                             height: 2.5.h,
                             width: 2.5.h,
@@ -122,6 +127,7 @@ class MusicPlayingCard extends ConsumerWidget {
                 ),
               ),
             ),
+            // Linear progress indicator for the track playback
             LinearMusicProgressIndicator(track: selectedTrackState.track),
           ],
         ),

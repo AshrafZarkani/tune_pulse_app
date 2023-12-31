@@ -1,3 +1,4 @@
+// Import necessary libraries
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -5,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sizer/sizer.dart';
 import 'package:tune_pulse/app/modules/tracklist_view/domain/providers/tracklist_providers.dart';
 
+// Widget to display an animated waveform that visualizes audio playback
 class AudioWaveAnimation extends ConsumerStatefulWidget {
   const AudioWaveAnimation({super.key});
 
@@ -21,13 +23,14 @@ class AudioWaveAnimationState extends ConsumerState<AudioWaveAnimation>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 1),
-    )..repeat();
+      duration: const Duration(seconds: 1), // Animation duration
+    )..repeat(); // Continuously repeat the animation
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    _controller
+        .dispose(); // Dispose of the animation controller when widget is removed
     super.dispose();
   }
 
@@ -35,12 +38,16 @@ class AudioWaveAnimationState extends ConsumerState<AudioWaveAnimation>
   Widget build(BuildContext context) {
     return Center(
       child: Visibility(
-        visible: ref.watch(playMusicNotifierProvider).isPlaying,
+        visible: ref
+            .watch(playMusicNotifierProvider)
+            .isPlaying, // Show only when music is playing
         child: AnimatedBuilder(
-          animation: _controller,
+          animation:
+              _controller, // Use AnimatedBuilder to synchronize with animation
           builder: (context, child) {
             return CustomPaint(
-              painter: WaveformPainter(_controller.value),
+              painter: WaveformPainter(
+                  _controller.value), // Pass animation value to painter
               size: Size(100.w, 100),
             );
           },
@@ -50,8 +57,9 @@ class AudioWaveAnimationState extends ConsumerState<AudioWaveAnimation>
   }
 }
 
+// Custom painter to draw the waveform
 class WaveformPainter extends CustomPainter {
-  final double animationValue;
+  final double animationValue; // Value from the animation controller
 
   WaveformPainter(this.animationValue);
 
@@ -61,23 +69,26 @@ class WaveformPainter extends CustomPainter {
       ..color = Colors.white
       ..strokeWidth = 2.0;
 
-    const int totalPoints = 100;
+    const int totalPoints = 100; // Number of points for smooth wave
     final double width = size.width / totalPoints;
     final double height = size.height;
 
     for (int i = 0; i < totalPoints; i++) {
       final double x = i * width;
       final double midY = height / 2;
-      final double maxAmplitude = height / 4;
-      final double sineHeight = maxAmplitude * sin(animationValue * 2 * pi + i);
+      final double maxAmplitude = height / 4; // Adjust for desired wave height
+      final double sineHeight = maxAmplitude *
+          sin(animationValue * 2 * pi +
+              i); // Calculate wave height using sine function
       final double y = midY + sineHeight;
 
-      canvas.drawLine(Offset(x, midY), Offset(x, y), paint);
+      canvas.drawLine(
+          Offset(x, midY), Offset(x, y), paint); // Draw each wave segment
     }
   }
 
   @override
   bool shouldRepaint(CustomPainter oldDelegate) {
-    return true;
+    return true; // Always repaint to ensure smooth animation
   }
 }
